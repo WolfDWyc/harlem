@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "harlem"
-version = "0.1.0a0"
+version = "0.2.0a0"
 description = "Powerful, simple, Python HAR (HTTP Archive) recorder and exporter."
 authors = ["WolfDWyc <62406166+WolfDWyc@users.noreply.github.com>"]
 license = "AGPL-3.0-or-later"
@@ -11,10 +11,14 @@ python = "^3.8"
 requests = "^2.31.0"
 pydantic = "^2.6.4"
 yarl = "^1.9.4"
+click = "^8.1.7"
 
 
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["d"], version = "^24.3.0"}
+
+[tool.poetry.scripts]
+harlem = "harlem.cli:main"
 
 [build-system]
 requires = ["poetry-core"]

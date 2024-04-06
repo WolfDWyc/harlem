@@ -9,7 +9,7 @@ from harlem.models.har import Page, Entry
 class LoggingHarExporter(BaseHarExporter):
     """
     An exporter that logs the HAR to a logging.logger.
-    New page and entry objects are dumped to the log extra field as dictionaries.
+    New page and entry objects are dumped to the log's extra field as dictionaries.
     """
 
     def __init__(
