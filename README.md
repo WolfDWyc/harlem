@@ -6,8 +6,10 @@ HAR is traditionally a file format for logging of a web browser's interaction wi
 Harlem extends this functionality to Python programs.
 
 HAR files are very useful for logging, debugging, and more.
-They're especially useful since browsers Chrome and Firefox support importing HAR files
+They're especially useful since browsers like Chrome and Firefox support importing HAR files
 to their developer tools network tab, which can help understanding your application's network activity.
+
+[Installation](#Installation) | [Quick start](#quick-start) | [Advanced Documentation](#Advanced-Documentation) | [Credits](#Credits)
 
 # Features
 
@@ -34,7 +36,6 @@ Currently supported:
 
 
 Planned support:
-- Exporters
 - `requests` parser
 - `aiohttp` recorder/parser
 - `httpx` recorder/parser
@@ -55,40 +56,31 @@ with record("my_program.har"):
 # And that's it! You'll get an HAR file with all the requests made by `my_program()`.
 
 # For human readable output, you can indent the output:
-
 with record("my_program.har", indent=2):
     my_program()
 
 # If you want your HAR file to update after every request (useful for long running programs),
 # you can use the `live` argument:
-
 with record("my_program.har", indent=2, live=True):
     my_program()
 
 
 # However, if your program makes a lot of requests, you might only want to update the HAR file every 10 seconds:
-
 with record("my_program.har", indent=2, live=True, interval_seconds=10):
     my_program()
 
 # And to cut back on the amount of data, you can add a time based rotation:
 with record("my_program.har", live=True, interval_seconds=10, retention_seconds=3600):
     my_program()
-
 # ('retention_seconds' also works without 'interval_seconds')
 
 # For even better performance, or for asyncio programs, you can use the `in_background` argument:
-
 with record("my_program.har", live=True, interval_seconds=10, in_background="thread"):
     my_program()
     
 # Or in a separate process:
-
 with record("my_program.har", live=True, interval_seconds=10, in_background="process"):
     my_program()
-    
-# ('in_background' currently only affects the exporting process)
-
 ```
 
 ## Advanced Documentation
@@ -127,3 +119,5 @@ Harlem currently only supports the `RequestsHarRecorder` for `requests` recorder
 - https://github.com/ahmadnassri/har-schema
 - http://www.softwareishard.com/blog/har-12-spec
 - https://indigo.re/posts/2020-10-09-har-is-clumsy.html
+- Harlem's design is inspired by [loguru](https://github.com/Delgan/loguru)
+[py-spy](https://github.com/benfred/py-spy), and [tqdm](https://github.com/tqdm/tqdm)
