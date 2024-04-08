@@ -109,6 +109,15 @@ class Timings(BaseModel):
     ssl: Optional[float] = None
     comment: Optional[str] = None
 
+    @property
+    def total(self) -> float:
+        return sum(
+            value
+            for key, value in self.dict().items()
+            if key in ("dns", "connect", "blocked", "send", "wait", "receive", "ssl")
+            and value not in (None, -1)
+        )
+
 
 class Page(BaseModel):
     startedDateTime: AwareDatetime

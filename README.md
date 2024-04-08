@@ -30,6 +30,7 @@ HAR entries (and not an entire file as opposed to a recorder).
 
 Currently supported:
 - `requests` recorder
+- `aiohttp` recorder
 - Extended `_initiator` field for call frames
 - Exporting*
   - To a model
@@ -49,7 +50,6 @@ Planned features:
 - Optimize memory usage of live exporting
 - Show requests that got connection errors
 - `requests` parser
-- `aiohttp` recorder/parser
 - `httpx` recorder/parser
 - `fastapi` recorder/parser
 
@@ -191,7 +191,19 @@ Harlem encourages writing custom exporters, but provides many built-in exporters
 Recorders are context managers that record HTTP requests made within their context.
 They also support manual `start()` and `stop()` methods, which can be called multiple times.
 
-Harlem currently only supports the `RequestsHarRecorder` for `requests` recorder, which accepts no arguments.
+Harlem currently supports the `RequestsHarRecorder` for `requests` and the
+`AiohttpHarRecorder` for `aiohttp`. Both recorders accept no arguments.
+
+Recorders are implemented both by using the provided hooking mechanisms of the libraries,
+but also by monkey-patching the libraries to add hooks - when necessary.
+
+Great care and research is taken to ensure that recorders extract as much information as possible from the requests,
+if some information is missing - please open an issue!
+
+These monkey patches also sometimes rely on internal APIs of the libraries, which may break in future versions.
+If you encounter any issues, please open an issue!
+
+In the future, tests will be added to verify which versions of the libraries are supported.
 
 ### Exporters
 

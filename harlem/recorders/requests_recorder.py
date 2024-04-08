@@ -16,19 +16,18 @@ from harlem.models.har import (
     Response,
     Timings,
     Cache,
-    Content,
     Page,
     PageTimings,
 )
 from harlem.recorders.base import BaseHarRecorder
-from harlem.recorders.common import _to_name_value_pairs, get_initiator
+from harlem.recorders.common import to_name_value_pairs, get_initiator, to_content
 
 
 def _to_har_request(request: requests.PreparedRequest) -> Request:
-    headers = _to_name_value_pairs(dict(request.headers))
-    cookies = _to_name_value_pairs(dict(request._cookies))
+    headers = to_name_value_pairs(dict(request.headers))
+    cookies = to_name_value_pairs(dict(request._cookies))  # TODO: parse cookies
     url = request.url
-    queryString = [{"name": k, "value": v} for k, v in URL(url).query.items()]
+    queryString = to_name_value_pairs(URL(url).query)
     if isinstance(request.body, str):
         body = request.body
         bodySize = len(request.body.encode())
@@ -59,13 +58,9 @@ def _to_har_response(response: requests.Response) -> Response:
         status=response.status_code,
         statusText=response.reason,
         httpVersion="HTTP/1.1",
-        cookies=_to_name_value_pairs(dict(response.cookies)),
-        headers=_to_name_value_pairs(dict(response.headers)),
-        content=Content(
-            size=len(response.content),
-            mimeType=response.headers.get("Content-Type", "text/plain"),
-            text=response.text,
-        ),
+        cookies=to_name_value_pairs(dict(response.cookies)),
+        headers=to_name_value_pairs(dict(response.headers)),
+        content=to_content(response.content, response.headers),
         redirectURL=response.headers.get("Location", ""),
         headersSize=-1,
         bodySize=len(response.content),
@@ -119,28 +114,23 @@ class RequestsHarRecorder(BaseHarRecorder):
 
         def wrapped_request(session, method, url, **kwargs):
             page_id = self._add_page(method, url)
-
-            hook = partial(self._add_entry, page=page_id)
-
-            if "hooks" in kwargs:
-                if "response" in kwargs["hooks"]:
-                    kwargs["hooks"]["response"] = chain(
-                        kwargs["hooks"]["response"], [hook]
-                    )
-                else:
-                    kwargs["hooks"]["response"] = [hook]
-            else:
-                kwargs["hooks"] = {"response": [hook]}
+            self._add_hook(kwargs, page_id)
 
             response = self._real_request(session, method, url, **kwargs)
             return response
 
         requests.sessions.Session.request = wrapped_request
 
-    def _stop(self):
-        if self._active:
-            requests.sessions.Session.request = self._real_request
-            self._active = False
+    def _add_hook(self, kwargs: dict, page_id: str):
+        hook = partial(self._add_entry, page=page_id)
+
+        if "hooks" in kwargs:
+            if "response" in kwargs["hooks"]:
+                kwargs["hooks"]["response"] = chain(kwargs["hooks"]["response"], [hook])
+            else:
+                kwargs["hooks"]["response"] = [hook]
+        else:
+            kwargs["hooks"] = {"response": [hook]}
 
     def _add_entry(
         self, response: requests.Response, page: Optional[str], *args, **kwargs
@@ -169,8 +159,13 @@ class RequestsHarRecorder(BaseHarRecorder):
             Page(
                 startedDateTime=datetime.now(timezone.utc),
                 id=page_id,
-                title=f"Requests {method} {url}",
+                title=f"requests {method} {url}",
                 pageTimings=PageTimings(),
             )
         )
         return page_id
+
+    def _stop(self):
+        if self._active:
+            requests.sessions.Session.request = self._real_request
+            self._active = False

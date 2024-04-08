@@ -19,7 +19,9 @@ def import_from_string(import_str: Any) -> Any:
 
     module_str, _, attrs_str = import_str.partition(":")
     if not module_str or not attrs_str:
-        message = 'Import string "{import_str}" must be in format "<module>:<attribute>".'
+        message = (
+            'Import string "{import_str}" must be in format "<module>:<attribute>".'
+        )
         raise ImportFromStringError(message.format(import_str=import_str))
 
     try:
@@ -36,7 +38,9 @@ def import_from_string(import_str: Any) -> Any:
             instance = getattr(instance, attr_str)
     except AttributeError:
         message = 'Attribute "{attrs_str}" not found in module "{module_str}".'
-        raise ImportFromStringError(message.format(attrs_str=attrs_str, module_str=module_str))
+        raise ImportFromStringError(
+            message.format(attrs_str=attrs_str, module_str=module_str)
+        )
 
     return instance
 
@@ -72,52 +76,52 @@ The import string should be in the format '<module>:<attribute>'. (e.g. 'mypacka
     "-l",
     is_flag=True,
     show_default=True,
-    help="Whether to log to the file in real-time or only on exit."
+    help="Whether to log to the file in real-time or only on exit.",
 )
 @click.option(
     "--interval-seconds",
     "-n",
     type=float,
     help="Write to the file on an interval instead of only on exit. "
-         "The file will also be written on exit."
+    "The file will also be written on exit.",
 )
 @click.option(
     "--retention-seconds",
     "-r",
     type=float,
     help="Optional number of seconds to keep old pages and entries. "
-         "If None, old pages and entries will not be removed. "
-         "Pages that are too old but still have entries will be kept. "
-         "If no interval is set, rotation will only happen after a new page or entry is added. "
-         "Rotation will also happen on exit.",
+    "If None, old pages and entries will not be removed. "
+    "Pages that are too old but still have entries will be kept. "
+    "If no interval is set, rotation will only happen after a new page or entry is added. "
+    "Rotation will also happen on exit.",
 )
 @click.option(
     "--in-background",
     "-b",
     type=click.Choice(["thread", "process"]),
     help="Whether to export in the background. "
-         "If 'thread', exports in a separate thread. If 'process', exports in a separate process."
+    "If 'thread', exports in a separate thread. If 'process', exports in a separate process.",
 )
 def main(
-        app: str,
-        output_path: Path,
-        indent: Union[None, int] = None,
-        live: bool = False,
-        interval_seconds: Union[None, float] = None,
-        retention_seconds: Union[None, float] = None,
-        in_background: Union[None, str] = None,
+    app: str,
+    output_path: Path,
+    indent: Union[None, int] = None,
+    live: bool = False,
+    interval_seconds: Union[None, float] = None,
+    retention_seconds: Union[None, float] = None,
+    in_background: Union[None, str] = None,
 ):
     app = import_from_string(app)
     with record_to_file(
-            output_path,
-            indent=indent,
-            live=live,
-            interval_seconds=interval_seconds,
-            retention_seconds=retention_seconds,
-            in_background=in_background,
+        output_path,
+        indent=indent,
+        live=live,
+        interval_seconds=interval_seconds,
+        retention_seconds=retention_seconds,
+        in_background=in_background,
     ):
         app()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

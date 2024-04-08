@@ -11,13 +11,14 @@ from harlem.exporters.concurrent_exporter import (
 )
 from harlem.exporters.io_exporter import FileHarExporter
 from harlem.exporters.live_file_exporter import LiveFileHarExporter
-from harlem.recorders import RequestsHarRecorder
+from harlem.recorders import RequestsHarRecorder, AiohttpHarRecorder
+from harlem.recorders.composite_recorder import CompositeHarRecorder
 
 
 @contextmanager
 def _record(
-        exporter: BaseHarExporter,
-        in_background: Literal[None, "thread", "process"],
+    exporter: BaseHarExporter,
+    in_background: Literal[None, "thread", "process"],
 ):
     if in_background == "thread":
         exporter = BackgroundThreadHarExporter(exporter)
@@ -30,18 +31,18 @@ def _record(
 
     # TODO: After more recorders are added, check which are installed and use them.
 
-    with RequestsHarRecorder(exporter):
+    with CompositeHarRecorder([RequestsHarRecorder, AiohttpHarRecorder], exporter):
         yield
 
 
 @contextmanager
 def record_to_file(
-        path: Union[None, str, Path] = None,
-        indent: Optional[int] = None,
-        live: bool = False,
-        interval_seconds: Optional[float] = None,
-        retention_seconds: Optional[float] = None,
-        in_background: Literal[None, "thread", "process"] = None,
+    path: Union[None, str, Path] = None,
+    indent: Optional[int] = None,
+    live: bool = False,
+    interval_seconds: Optional[float] = None,
+    retention_seconds: Optional[float] = None,
+    in_background: Literal[None, "thread", "process"] = None,
 ):
     """
     A simple context-manager API for recording to HAR files.
@@ -83,11 +84,11 @@ def record_to_file(
 
 @contextmanager
 def record_to_logger(
-        logger: Optional[logging.Logger] = None,
-        level: Union[int, str] = logging.DEBUG,
-        new_page_message: str = "New page added",
-        new_entry_message: str = "New entry added",
-        in_background: Literal[None, "thread", "process"] = None,
+    logger: Optional[logging.Logger] = None,
+    level: Union[int, str] = logging.DEBUG,
+    new_page_message: str = "New page added",
+    new_entry_message: str = "New entry added",
+    in_background: Literal[None, "thread", "process"] = None,
 ):
     """
     A simple context-manager API for recording new pages and entries to a logger.
