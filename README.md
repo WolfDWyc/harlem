@@ -10,8 +10,9 @@ They're especially useful since browsers like Chrome and Firefox support importi
 to their developer tools network tab, which can help understanding your application's network activity.
 
 [CLI Usage](#CLI-Usage) |
-[Python API](#Python-Quick-Start) |
-[Advanced Documentation](#Advanced-Documentation) |
+[Python Usage](#Python-Usage) |
+[Documentation](#Documentation) |
+[API Reference](#API-Reference) |
 [Credits](#Credits)
 
 ## Installation
@@ -25,9 +26,6 @@ pip install harlem
 Harlem exposes a simple API using a CLI and a simple context manager (for Python usage),
 but also provides an advanced API for more control.
 
-For some libraries Harlem also exposes standalone parsing functions that create
-HAR entries (and not an entire file as opposed to a recorder).
-
 Currently supported:
 - `requests` recorder
 - `aiohttp` recorder
@@ -36,111 +34,73 @@ Currently supported:
   - To a model
   - To a file (or any IO object)
   - To logging
-  - Live recording
-    - After every request
-    - With an interval
-    - With a time based rotation
+  - Live recording (After every request, with an interval, or with a time based rotation)
   - Concurrent/threaded/asynchronous recording
 - Exporting on abnormal exit (e.g. KeyboardInterrupt)
 
 *Read in [Exporter documentation](#Exporters) about why Harlem implements exporting itself.
 
 
-Planned features:
+Planned features (in no particular order):
 - Optimize memory usage of live exporting
 - Show requests that got connection errors
-- `requests` parser
-- `httpx` recorder/parser
-- `fastapi` recorder/parser
+- Extensive testing for multiple library versions
+- `httpx` recorder
+- `fastapi` recorder
 
-# CLI Usage
+# Quickstart
 
-If all you want is to get an HAR file when your program exits, simply do this:
+## CLI Usage
+
+Harlem's CLI is the simplest way to use Harlem.
+You run your program with the `harlem` command, and it will output a HAR file when your program exits.
 
 ```bash
-harlem mypackage.main:start my_program.har
-
+# If all you want is to get an HAR file when your program exits, simply do this:
+harlem mypackage.main:start my_program_log.har
 # Also works with python -m
-python -m harlem mypackage.main:start my_program.har
+python -m harlem mypackage.main:start my_program_log.har
 
 # For human readable output, you can indent the output:
-harlem mypackage.main:start my_program.har --indent 2
+harlem mypackage.main:start my_program_log.har --indent 2
 
 # If you want your HAR file to update after every request (useful for long running programs),
 # you can use the `--live` argument:
-harlem mypackage.main:start my_program.har --live
-
+harlem mypackage.main:start my_program_log.har --live
 # However, if your program makes a lot of requests, you might only want to update the HAR file every 10 seconds:
-harlem mypackage.main:start my_program.har --interval-seconds 10
-
+harlem mypackage.main:start my_program_log.har --interval-seconds 10
 # And to cut back on the amount of data, you can add a time based rotation:
-harlem mypackage.main:start my_program.har --interval-seconds 10 --retention-seconds 3600
+harlem mypackage.main:start my_program_log.har --interval-seconds 10 --retention-seconds 3600
 
 # For even better performance, or for asyncio programs, you can use the `--in-background` argument:
-harlem mypackage.main:start my_program.har --interval-seconds 10 --in-background thread
-
+harlem mypackage.main:start my_program_log.har --interval-seconds 10 --in-background thread
 # Or in a separate process:
-harlem mypackage.main:start my_program.har --interval-seconds 10 --in-background process
+harlem mypackage.main:start my_program_log.har --interval-seconds 10 --in-background process
 
 # All flags have short versions:
-harlem mypackage.main:start my_program.har -i 2 -l -n 10 -r 3600 -b thread
+harlem mypackage.main:start my_program_log.har -i 2 -l -n 10 -r 3600 -b thread
 ```
-For more information, use the --help flag:
-```
-Usage: harlem [OPTIONS] APP OUTPUT_PATH                                       
-                                                                              
-  Record a HAR file of a Python application.  Accepts an import string for the
-  application to run and an output file path to write the HAR to.             
-                                                                              
-  The import string should be in the format '<module>:<attribute>'. (e.g.     
-  'main:start')                                                               
-                                                                              
-Options:                                                                      
-  -i, --indent INTEGER            The number of spaces to use for indentation 
-                                  in the output JSON HAR file.                
-  -l, --live                      Whether to log to the file in real-time, or 
-                                  only when the context manager exits. If     
-                                  false, all interval and retention options   
-                                  are ignored. Defaults to False.             
-  -n, --interval-seconds FLOAT    Optional number of seconds to wait between  
-                                  writes to the file. If None, the file will
-                                  be written every time a new page or entry is
-                                  added. The file will also be written on
-                                  exit.
-  -r, --retention-seconds FLOAT   Optional number of seconds to keep old pages
-                                  and entries. If None, old pages and entries
-                                  will not be removed. Pages that are too old
-                                  but still have entries will be kept. If no
-                                  interval is set, rotation will only happen
-                                  after a new page or entry is added. Rotation
-                                  will also happen on exit.
-  -b, --in-background [thread|process]
-                                  Whether to export in the background. If
-                                  'thread', exports in a separate thread. If
-                                  'process', exports in a separate process.
-  --help                          Show this message and exit.
-```
+For more information, use the --help flag or see the [CLI-Reference](docs/api-reference/cli.md)
 
+## Python Usage
 
-# Python Usage
-
-## Quick start
-
-The `record_to_file()` context manager is the simplest way to use Harlem from Python.
+The `record_to_file()` context manager provides the same functionality as the CLI, but in Python.
 It's arguments and semantics are the same as the CLI.
 
 ```python
 from harlem import record_to_file
 
-with record_to_file("my_program.har", live=True):
+with record_to_file("my_program_log.har", live=True):
   my_program()
 
-with record_to_file("my_program.har", indent=2, interval_seconds=10, retention_seconds=3600):
+with record_to_file("my_program_log.har", indent=2, interval_seconds=10, retention_seconds=3600):
   my_program()
 
-with record_to_file("my_program.har", interval_seconds=10, in_background="process"):
+with record_to_file("my_program_log.har", interval_seconds=10, in_background="process"):
   my_program()
 ```
+
+For more information, see the [`record_to_file()` reference](docs/api-reference/record.md#record_to_file)
 
 For non-cli usage, another common use case is to use the `record_to_logger()` context manager.
 This will log each new entry and page to the log's extra field.
@@ -169,14 +129,17 @@ with record_to_logger(
     my_program()
 ```
 
+For more information, see the [`record_to_logger()` reference](docs/api-reference/record.md#record_to_logger)
 
-## Advanced Documentation
+# Documentation
 
-Since harlem is very small, the documentation is fully available here (and in docstrings).
+Harlem's full documentation is available in this repository.
+All major features, design decisions, and caveats are documented in this file,
+and the full API reference is available [here](docs/api-reference/README.md).
 
-### How it works
+## Design
 
-Harlem's API works by exposing a recorder for each library it supports.
+Harlem's API exposes a recorder for each library it supports.
 Recorders are generally provided by Harlem itself.
 
 Recorders are context managers that report on any HTTP requests made within their context.
@@ -186,30 +149,45 @@ Exporters usually write the data to an external source, but can also be used to 
 to return it as a Pydantic model, or anything else.
 Harlem encourages writing custom exporters, but provides many built-in exporters for convenience.
 
-### Recorders
+## Recorders
 
 Recorders are context managers that record HTTP requests made within their context.
 They also support manual `start()` and `stop()` methods, which can be called multiple times.
+They all inherit from the `HarRecorder` interface.
 
-Harlem currently supports the `RequestsHarRecorder` for `requests` and the
-`AiohttpHarRecorder` for `aiohttp`. Both recorders accept no arguments.
+Harlem currently  supports the `RequestsHarRecorder` for `requests` recorder,
+and the `AiohttpHarRecorder` for `aiohttp` recorder, which both accept no arguments.
 
-Recorders are implemented both by using the provided hooking mechanisms of the libraries,
-but also by monkey-patching the libraries to add hooks - when necessary.
+For more information, see the [Recorders reference](docs/api-reference/advanced/recorders.md)
 
-Great care and research is taken to ensure that recorders extract as much information as possible from the requests,
-if some information is missing - please open an issue!
+### How recorders work
 
-These monkey patches also sometimes rely on internal APIs of the libraries, which may break in future versions.
-If you encounter any issues, please open an issue!
+Recorders usually work by patching the library they record,
+while also using hooking mechanisms provided by the library for more information.
 
-In the future, tests will be added to verify which versions of the libraries are supported.
+For example, in `aiohttp`, the `AiohttpHarRecorder` patches the `ClientSession` class to record requests.
 
-### Exporters
+
+
+## Exporters
 
 Exporters are responsible for handling the data recorded by the recorder.
+They all inherit from the `HarExporter` interface.
 
-#### Why Harlem implements exporting itself
+The provided exporters are:
+- `ModelHarExporter` - Exports the data as a Pydantic model
+- `LiveFileHarExporter` - Exports the data to a file in real-time
+- `LoggingHarExporter` - Logs the data to a logger
+- `FileHarExporter` - Exports the data to a file
+- `IoHarExporter` - Exports the data to any IO object
+- `CompositeHarExporter` - Exports the data to multiple exporters
+- `ExecutorHarExporter` - Exports the data in a separate `concurrent.futures.Executor` (not thread-safe)
+- `BackgroundThreadHarExporter` - Exports the data in a separate thread
+- `BackgroundProcessHarExporter` - Exports the data in a separate process
+
+For more information, see the [Exporters reference](docs/api-reference/advanced/exporters.md)
+
+### Why Harlem implements exporting itself
 
 Initially, it might seem like Harlem is trying to reinvent the wheel by implementing exporting itself.
 After all, HAR files are logs, and many logging libraries already have extensive rotation implementations.
@@ -217,7 +195,7 @@ So why not just use those?
 
 This boils down to how HAR works. HAR files consist of a list of entries and pages that are generated for each request.
 So if we just handed off new entries and pages to a logging library,
-we would have to do extra processing to format them into a HAR file.
+we would have to do extra processing to format them into a HAR file externally.
 
 This is useful for more advanced use cases - for example, if you want to save the last 30 days of requests,
 it's probably not a good idea to keep all of them in memory, or even in a single file on disk.
@@ -226,14 +204,40 @@ Instead, you could use a logging library to save each entry to a separate file, 
 Harlem *does* support this using `record_to_logger` and `LoggingHarExporter` which logs each entry to a provided logger.
 
 However, Harlem also intends to be simple, and output a complete HAR file which can be imported into an HAR viewer
-without any extra processing. This is why Harlem implements exporting itself.
+without any extra processing. Thus, Harlem provides exporters that handle the entire HAR file for many common use cases.
 
-#### ModelHarExporter
+### Concurrent exporters
 
-[W.I.P] Docs in progress
+Some of Harlem's exporters are concurrent, meaning they export the data in a separate thread or process.
 
+Apart from the obvious `ExecutorHarExporter`, `BackgroundThreadHarExporter` (`in_background="thread"`)
+and `BackgroundProcessHarExporter` (`in_background="process"`) exporters,
+interval-based exporting (which uses `LiveFileHarExporter` internally) also uses a separate thread,
+if an interval is provided - to ensure the interval is kept even if no requests are made.
 
+This can be disabled by setting `hard_interval` to `False` when using the `LiveFileHarExporter` API,
+or not providing an interval at all (not available in the CLI or `record_to_file()`).
 
+Harlem tries to handle concurrency as good as it can, but it's not perfect.
+Harlem sets a 10-second timeout for the`BackgroundProcessHarExporter` to join the process.
+It does the same for the live exporter's background thread.
+These timeouts are configurable using the `join_timeout` argument.
+
+If, for example, the HAR file is very large, or the file system is very slow, this timeout might be too short.
+Using the `BackgroundProcessHarExporter` timeout exceeding can cause corruption of the HAR file.
+
+For the `LiveFileHarExporter`, the thread can not be forcefully stopped, 
+so it will always finish updating, even if that means it will continue after the timeout.
+
+Generally, these should be safe to use, even in production environments, as you're unlikely to run into these issues.
+And even if you do, none of this should hurt your program, and the worst that could happen is corruption of the HAR
+file, or the file being locked for after the timeout. The leaking thread will only be 1 per recording,
+which shouldn't be more than 1 for most programs.
+
+However, if you absolutely can not afford to lose data, leak any thread, or have a specific use case 
+with a lot of requests and a lot of recordings, it's always recommended to use the `record_to_logger()` or
+`LoggingHarExporter`, or simply turn off concurrent features, if performance is not a concern.
+This moves the exporting to your logging system, which should be more optimized for your use case.
 
 # Credits
 - https://github.com/ahmadnassri/har-schema

@@ -1,0 +1,77 @@
+processors:
+- type: filter
+  documented_only: false
+- type: smart
+- type: crossref
+renderer:
+  type: mkdocs
+  markdown:
+    source_linker:
+      type: github
+      repo: WolfDWyc/harlem
+    descriptive_class_title: false
+    render_typehint_in_data_header: true
+  content_directory_name: ""
+  output_directory: docs/api-reference  # The directory where the generated markdown files will be saved
+  pages:
+  - title: CLI
+    name: cli
+    contents:
+    - harlem.cli.main
+  - title: Simple recordings
+    name: record
+    contents:
+    - harlem.record.record_to_file
+    - harlem.record.record_to_logger
+  - title: Models
+    name: models
+    contents:
+    - harlem.models.har.Creator.*
+    - harlem.models.har.Browser.*
+    - harlem.models.har.PageTimings.*
+    - harlem.models.har.Cookie.*
+    - harlem.models.har.Header.*
+    - harlem.models.har.Query.*
+    - harlem.models.har.Params.*
+    - harlem.models.har.PostData.*
+    - harlem.models.har.Content.*
+    - harlem.models.har.BeforeRequest.*
+    - harlem.models.har.AfterRequest.*
+    - harlem.models.har.Timings.*
+    - harlem.models.har.Page.*
+    - harlem.models.har.Request.*
+    - harlem.models.har.Response.*
+    - harlem.models.har.Cache.*
+    - harlem.models.har.CallFrame.*
+    - harlem.models.har.Stack.*
+    - harlem.models.har.Initiator.*
+    - harlem.models.har.Entry.*
+    - harlem.models.har.Log.*
+    - harlem.models.har.Har.*
+  - title: Common
+    name: advanced/common
+    contents:
+    - harlem.common.to_har_model
+  - title: Recorders
+    name: advanced/recorders
+    contents:
+    - harlem.recorders.requests_recorder.RequestsHarRecorder
+    - harlem.recorders.aiohttp_recorder.AiohttpHarRecorder
+    - harlem.recorders.composite_recorder.CompositeHarRecorder
+    - harlem.recorders.base.HarRecorder.*
+  - title: Exporters
+    name: advanced/exporters
+    contents:
+    - harlem.exporters.model_exporter.ModelHarExporter
+    - harlem.exporters.model_exporter.ModelHarExporter.to_model
+    - harlem.exporters.logging_exporter.LoggingHarExporter
+    - harlem.exporters.io_exporter.IoHarExporter
+    - harlem.exporters.io_exporter.IoHarExporter.update_file
+    - harlem.exporters.io_exporter.FileHarExporter
+    - harlem.exporters.live_file_exporter.LiveFileHarExporter
+    - harlem.exporters.live_file_exporter.LiveFileHarExporter.update_file
+    - harlem.exporters.concurrent_exporter.ExecutorHarExporter
+    - harlem.exporters.concurrent_exporter.BackgroundThreadHarExporter
+    - harlem.exporters.concurrent_exporter.BackgroundProcessHarExporter
+    - harlem.exporters.composite_exporter.CompositeHarExporter
+    - harlem.exporters.base.HarExporter.*

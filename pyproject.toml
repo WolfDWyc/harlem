@@ -15,11 +15,12 @@ click = "^8.1.7"
 aiohttp = "3.8.5"
 
 
-[tool.poetry.group.dev.dependencies]
-black = {extras = ["d"], version = "^24.3.0"}
-
 [tool.poetry.scripts]
 harlem = "harlem.cli:main"
+
+[tool.poetry.group.dev.dependencies]
+pydoc-markdown = "^4.8.2"
+black = "<24"
 
 [build-system]
 requires = ["poetry-core"]

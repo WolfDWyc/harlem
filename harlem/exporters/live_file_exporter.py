@@ -4,12 +4,12 @@ from threading import Thread
 from typing import Union, cast, IO, Optional
 
 from harlem.common import to_har_model
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.exporters.common import save_to_io
 from harlem.models.har import Page, Entry
 
 
-class LiveFileHarExporter(BaseHarExporter):
+class LiveFileHarExporter(HarExporter):
     """
     An exporter that writes the HAR to a file in real-time.
     Allows manual updates to the file using the update_file method.
@@ -22,6 +22,7 @@ class LiveFileHarExporter(BaseHarExporter):
         interval_seconds: Optional[float] = None,
         hard_interval: bool = True,
         retention_seconds: Optional[float] = None,
+        join_timeout: Optional[float] = 10,
     ):
         """
         :param path: The path to save the HAR to.
@@ -39,6 +40,9 @@ class LiveFileHarExporter(BaseHarExporter):
         Pages that are too old but still have entries will be kept.
         If no interval is set, rotation will only happen after a new page or entry is added.
         Rotation will also happen when the context manager exits.
+        :param join_timeout: Optional number of seconds to wait for the background thread to join when stopping.
+        If None, the thread will be joined without a timeout.
+        Only used if interval_seconds is not None and hard_interval is True.
         """
         super().__init__()
         self._path = Path(path)
@@ -47,9 +51,10 @@ class LiveFileHarExporter(BaseHarExporter):
         self._entries = []
         self._interval_seconds = interval_seconds
         self._hard_interval = hard_interval
+        self._join_timeout = join_timeout
         self._retention_seconds = retention_seconds
         self._last_save = 0
-        self._scheduler = None
+        self._scheduler: Optional[Thread] = None
 
     def _remove_old(self):
         if self._retention_seconds is None:
@@ -105,7 +110,7 @@ class LiveFileHarExporter(BaseHarExporter):
 
     def _scheduled_update(self):
         start_time = time.monotonic()
-        while True:
+        while self.active:
             self.update_file()
             time.sleep(
                 self._interval_seconds
@@ -120,10 +125,12 @@ class LiveFileHarExporter(BaseHarExporter):
     def _stop(self):
         try:
             if self._scheduler:
-                self._scheduler.join()
+                self._scheduler.join(timeout=self._join_timeout)
             self.update_file()
         except Exception:  # noqa
             pass
+        finally:
+            self._scheduler = None
 
     def _add_page(self, page: Page):
         self._pages.append(page)

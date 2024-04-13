@@ -1,9 +1,9 @@
 from harlem.common import to_har_model
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.models.har import Page, Entry, Har
 
 
-class ModelHarExporter(BaseHarExporter):
+class ModelHarExporter(HarExporter):
     """
     An exporter that builds a HAR model from pages and entries.
     """

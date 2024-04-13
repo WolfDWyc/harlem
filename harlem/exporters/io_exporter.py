@@ -2,12 +2,12 @@ from pathlib import Path
 from typing import Union, IO, Optional
 
 from harlem.common import to_har_model
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.exporters.common import save_to_io
 from harlem.models.har import Page, Entry
 
 
-class IoHarExporter(BaseHarExporter):
+class IoHarExporter(HarExporter):
     """
     An exporter that writes the HAR to an IO object.
     Allows manual updates to the file using the update_file method.

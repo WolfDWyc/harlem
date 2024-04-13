@@ -1,3 +1,7 @@
+# Pydoc markdown artifacts
+.generated-files.txt
+mkdocs.yml
+
 # Project specific byproducts
 *.har
 

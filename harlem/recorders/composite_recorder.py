@@ -1,18 +1,18 @@
 from typing import List, Callable
 
-from harlem.exporters.base import BaseHarExporter
-from harlem.recorders.base import BaseHarRecorder
+from harlem.exporters.base import HarExporter
+from harlem.recorders.base import HarRecorder
 
 
-class CompositeHarRecorder(BaseHarRecorder):
+class CompositeHarRecorder(HarRecorder):
     """
     A recorder that listens for requests made by multiple libraries.
     """
 
     def __init__(
         self,
-        recorders: List[Callable[[BaseHarExporter], BaseHarRecorder]],
-        exporter: BaseHarExporter,
+        recorders: List[Callable[[HarExporter], HarRecorder]],
+        exporter: HarExporter,
     ):
         super().__init__(exporter)
         self._recorders = [recorder(exporter) for recorder in recorders]

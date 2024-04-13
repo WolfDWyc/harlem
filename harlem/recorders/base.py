@@ -1,11 +1,10 @@
 from abc import abstractmethod
 
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 
 
-class BaseHarRecorder:
-
-    def __init__(self, exporter: BaseHarExporter):
+class HarRecorder:
+    def __init__(self, exporter: HarExporter):
         self._exporter = exporter
 
     @abstractmethod

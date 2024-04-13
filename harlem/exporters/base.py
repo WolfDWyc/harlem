@@ -3,7 +3,7 @@ from abc import abstractmethod
 from harlem.models.har import Page, Entry
 
 
-class BaseHarExporter:
+class HarExporter:
     def __init__(self):
         self._page_count = 0
         self.active = False

@@ -8,7 +8,7 @@ from typing import Optional, Union
 import requests
 from yarl import URL
 
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.models.har import (
     Entry,
     Request,
@@ -19,7 +19,7 @@ from harlem.models.har import (
     Page,
     PageTimings,
 )
-from harlem.recorders.base import BaseHarRecorder
+from harlem.recorders.base import HarRecorder
 from harlem.recorders.common import to_name_value_pairs, get_initiator, to_content
 
 
@@ -96,12 +96,12 @@ def _to_har_connection(response: requests.Response) -> str:
     return str(sock.getsockname()[1])
 
 
-class RequestsHarRecorder(BaseHarRecorder):
+class RequestsHarRecorder(HarRecorder):
     """
     A recorder that listens for requests made by the requests library.
     """
 
-    def __init__(self, exporter: BaseHarExporter):
+    def __init__(self, exporter: HarExporter):
         super().__init__(exporter)
         self._real_request = None
         self._active = False

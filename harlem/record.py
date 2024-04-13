@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Union, Optional, Literal
 
-from harlem.exporters import LoggingHarExporter, BaseHarExporter
+from harlem.exporters import LoggingHarExporter, HarExporter
 from harlem.exporters.concurrent_exporter import (
     BackgroundThreadHarExporter,
     BackgroundProcessHarExporter,
@@ -17,7 +17,7 @@ from harlem.recorders.composite_recorder import CompositeHarRecorder
 
 @contextmanager
 def _record(
-    exporter: BaseHarExporter,
+    exporter: HarExporter,
     in_background: Literal[None, "thread", "process"],
 ):
     if in_background == "thread":
@@ -86,13 +86,14 @@ def record_to_file(
 def record_to_logger(
     logger: Optional[logging.Logger] = None,
     level: Union[int, str] = logging.DEBUG,
-    new_page_message: str = "New page added",
-    new_entry_message: str = "New entry added",
+    new_page_message: str = "New HAR page added",
+    new_entry_message: str = "New HAR entry added",
     in_background: Literal[None, "thread", "process"] = None,
 ):
     """
     A simple context-manager API for recording new pages and entries to a logger.
-    New page and entry objects are dumped to the log's extra field as dictionaries.
+    New page and entry objects are dumped to the log's extra field as dictionaries
+    in the "har_page" and "har_entry" keys.
 
     :param logger: The logger to log to.
     If not provided, the default __name__ logger will be used.

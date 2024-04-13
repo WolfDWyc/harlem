@@ -159,6 +159,10 @@ class Cache(BaseModel):
     comment: Optional[str] = None
 
 
+# region Initiator
+# Note: This part of the schema is based on sample data from Chrome and may not be accurate.
+
+
 class CallFrame(BaseModel):
     functionName: Optional[str] = None
     scriptId: Optional[str] = None
@@ -171,10 +175,12 @@ class Stack(BaseModel):
     callFrames: List[CallFrame]
 
 
-# Note: This part of the schema is based on sample data from Chrome and may not be accurate.
 class Initiator(BaseModel):
     type: Literal["script", "other"]
     stack: Optional[Stack] = None
+
+
+# endregion
 
 
 class Entry(BaseModel):

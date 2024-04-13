@@ -1,15 +1,15 @@
 from typing import List
 
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.models.har import Entry, Page
 
 
-class CompositeHarExporter(BaseHarExporter):
+class CompositeHarExporter(HarExporter):
     """
     An exporter that delegates to multiple exporters.
     """
 
-    def __init__(self, exporters: List[BaseHarExporter]):
+    def __init__(self, exporters: List[HarExporter]):
         """
         :param exporters: List of exporters to delegate to.
         """

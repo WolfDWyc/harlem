@@ -28,7 +28,7 @@ from aiohttp.tracing import (
 )
 from aiohttp.typedefs import StrOrURL
 
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.models.har import (
     Entry,
     Request,
@@ -39,7 +39,7 @@ from harlem.models.har import (
     Page,
     PageTimings,
 )
-from harlem.recorders.base import BaseHarRecorder
+from harlem.recorders.base import HarRecorder
 from harlem.recorders.common import (
     to_name_value_pairs,
     get_initiator,
@@ -165,7 +165,7 @@ def _to_har_timings(events: List[Event]) -> Timings:
         ):
             end_send = send_start + send
             wait = event.timestamp * 1000 - end_send
-            recieve = wait
+            receive = wait
         if isinstance(event.params, TraceResponseChunkReceivedParams):
             receive = event.timestamp * 1000 - end_send
 
@@ -179,12 +179,16 @@ def _to_har_timings(events: List[Event]) -> Timings:
     )
 
 
-class AiohttpHarRecorder(BaseHarRecorder):
+class _HarlemTraceConfig(aiohttp.TraceConfig):
+    pass
+
+
+class AiohttpHarRecorder(HarRecorder):
     """
     A recorder that listens for requests made by the requests library.
     """
 
-    def __init__(self, exporter: BaseHarExporter):
+    def __init__(self, exporter: HarExporter):
         super().__init__(exporter)
         self._real_request = None
         self._real_release_connection = None
@@ -200,18 +204,24 @@ class AiohttpHarRecorder(BaseHarRecorder):
             session: aiohttp.ClientSession, method, str_or_url, **kwargs
         ):
             page_id = self._add_page(method, str_or_url)
-            self._add_hook(session, kwargs, page_id)
+            self._ensure_hook(session, kwargs, page_id)
 
             with self._save_connection_details(session):
                 return await self._real_request(session, method, str_or_url, **kwargs)
 
         aiohttp.ClientSession._request = wrapped_request
 
-    def _add_hook(self, session: aiohttp.ClientSession, kwargs: dict, page_id: str):
-        class HarlemTraceConfig(aiohttp.TraceConfig):
-            pass
+    def _ensure_hook(self, session: aiohttp.ClientSession, kwargs: dict, page_id: str):
+        trace_request_ctx = kwargs.get("trace_request_ctx", SimpleNamespace())
+        trace_request_ctx.page_id = page_id
+        trace_request_ctx.events = []
+        kwargs["trace_request_ctx"] = trace_request_ctx
 
-        trace_config = HarlemTraceConfig()
+        for trace_config in session._trace_configs:
+            if isinstance(trace_config, _HarlemTraceConfig):
+                return
+
+        trace_config = _HarlemTraceConfig()
 
         trace_config.on_request_start.append(self._on_event)
         trace_config.on_request_chunk_sent.append(self._on_event)
@@ -229,19 +239,8 @@ class AiohttpHarRecorder(BaseHarRecorder):
 
         trace_config.freeze()
 
-        has_harlem_trace_config = False
-        for trace_config in session._trace_configs:
-            if isinstance(trace_config, HarlemTraceConfig):
-                has_harlem_trace_config = True
-                break
+        session._trace_configs.append(trace_config)
 
-        if not has_harlem_trace_config:
-            session._trace_configs.append(trace_config)
-
-        trace_request_ctx = kwargs.get("trace_request_ctx", SimpleNamespace())
-        trace_request_ctx.page_id = page_id
-        trace_request_ctx.events = []
-        kwargs["trace_request_ctx"] = trace_request_ctx
 
     @contextmanager
     def _save_connection_details(self, session: aiohttp.ClientSession):

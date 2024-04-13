@@ -1,18 +1,19 @@
 from concurrent.futures import Executor, ThreadPoolExecutor, ProcessPoolExecutor
 from multiprocessing import Queue, Process
-from typing import Literal
+from typing import Literal, Optional
 
-from harlem.exporters.base import BaseHarExporter
+from harlem.exporters.base import HarExporter
 from harlem.models.har import Page, Entry
 
 
-class ExecutorHarExporter(BaseHarExporter):
+class ExecutorHarExporter(HarExporter):
     """
     An exporter that delegates to another exporter and uses an executor to run the operations concurrently.
-    Please note that the exporter should be thread-safe (or process-safe, if using a ProcessPoolExecutor).
+    Please note that the inner exporter should be thread-safe (or process-safe, if using a ProcessPoolExecutor),
+    or things might not work properly.
     """
 
-    def __init__(self, exporter: BaseHarExporter, executor: Executor):
+    def __init__(self, exporter: HarExporter, executor: Executor):
         """
         :param exporter: The exporter to delegate to.
         :param executor: The executor to run the operations concurrently.
@@ -34,19 +35,19 @@ class ExecutorHarExporter(BaseHarExporter):
         self._exporter._stop()
 
 
-class BackgroundThreadHarExporter(BaseHarExporter):
+class BackgroundThreadHarExporter(HarExporter):
     """
     An exporter that delegates to another exporter and executes it in a separate thread in the background.
     Uses a ThreadPoolExecutor with a single worker to work around non-thread-safe exporters.
     """
 
-    def __init__(self, exporter: BaseHarExporter):
+    def __init__(self, exporter: HarExporter):
         """
         :param exporter: The exporter to delegate to.
         """
         super().__init__()
         self._exporter = exporter
-        self._executor = None
+        self._executor: Optional[ThreadPoolExecutor] = None
 
     def _add_page(self, page: Page):
         self._executor.submit(self._exporter._add_page, page)
@@ -68,19 +69,22 @@ class BackgroundThreadHarExporter(BaseHarExporter):
             self._executor = None
 
 
-class BackgroundProcessHarExporter(BaseHarExporter):
+class BackgroundProcessHarExporter(HarExporter):
     """
     An exporter that delegates to another exporter and executes it in a separate process in the background.
     """
 
-    def __init__(self, exporter: BaseHarExporter):
+    def __init__(self, exporter: HarExporter, join_timeout: Optional[float] = 10):
         """
         :param exporter: The exporter to delegate to.
+        :param join_timeout: Optional number of seconds to wait for the background process to join when stopping.
+        If None, the process will be joined without a timeout.
         """
         super().__init__()
         self._exporter = exporter
-        self._queue = None
-        self._process = None
+        self._queue: Optional[Queue] = None
+        self._process: Optional[Process] = None
+        self._join_timeout = join_timeout
 
     def _worker(self):
         self._exporter._start()
@@ -108,7 +112,7 @@ class BackgroundProcessHarExporter(BaseHarExporter):
     def _stop(self):
         try:
             self._queue.put(None)
-            self._process.join(timeout=10)
+            self._process.join(timeout=self._join_timeout)
         except Exception:  # noqa
             pass
         finally:
