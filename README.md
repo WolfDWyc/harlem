@@ -155,10 +155,13 @@ Recorders are context managers that record HTTP requests made within their conte
 They also support manual `start()` and `stop()` methods, which can be called multiple times.
 They all inherit from the `HarRecorder` interface.
 
-Harlem currently  supports the `RequestsHarRecorder` for `requests` recorder,
-and the `AiohttpHarRecorder` for `aiohttp` recorder, which both accept no arguments.
+Harlem currently  supports the [`RequestsHarRecorder`](docs/api-reference/advanced/recorders.md#RequestsHarRecorder)
+for `requests`, and the [`AiohttpHarRecorder`](docs/api-reference/advanced/recorders.md#AiohttpHarRecorder)
+for `aiohttp`, which both accept no arguments.
 
 For more information, see the [Recorders reference](docs/api-reference/advanced/recorders.md)
+
+Recorders take a lot of research and effort to implement, and contributions for any additional recorders are welcome.
 
 ### How recorders work
 
@@ -176,15 +179,20 @@ Exporters are responsible for handling the data recorded by the recorder.
 They all inherit from the `HarExporter` interface.
 
 The provided exporters are:
-- `ModelHarExporter` - Exports the data as a Pydantic model
-- `LiveFileHarExporter` - Exports the data to a file in real-time
-- `LoggingHarExporter` - Logs the data to a logger
-- `FileHarExporter` - Exports the data to a file
-- `IoHarExporter` - Exports the data to any IO object
-- `CompositeHarExporter` - Exports the data to multiple exporters
-- `ExecutorHarExporter` - Exports the data in a separate `concurrent.futures.Executor` (not thread-safe)
-- `BackgroundThreadHarExporter` - Exports the data in a separate thread
-- `BackgroundProcessHarExporter` - Exports the data in a separate process
+- [`ModelHarExporter`](docs/api-reference/advanced/exporters.md#ModelHarExporter) - Exports the data as a Pydantic model
+- [`LiveFileHarExporter`](docs/api-reference/advanced/exporters.md#LiveFileHarExporter) - Exports the data to a file in
+real-time
+- [`LoggingHarExporter`](docs/api-reference/advanced/exporters.md#LoggingHarExporter) - Logs the data to a logger
+- [`FileHarExporter`](docs/api-reference/advanced/exporters.md#FileHarExporter) - Exports the data to a file
+- [`IoHarExporter`](docs/api-reference/advanced/exporters.md#IoHarExporter) - Exports the data to any IO object
+- [`CompositeHarExporter`](docs/api-reference/advanced/exporters.md#CompositeHarExporter) - Exports the data to multiple
+exporters
+- [`ExecutorHarExporter`](docs/api-reference/advanced/exporters.md#ExecutorHarExporter) - Exports the data in a separate
+`concurrent.futures.Executor` (not thread-safe)
+- [`BackgroundThreadHarExporter`](docs/api-reference/advanced/exporters.md#BackgroundThreadHarExporter) - Exports the
+data in a separate thread
+- [`BackgroundProcessHarExporter`](docs/api-reference/advanced/exporters.md#BackgroundProcessHarExporter) - Exports the
+data in a separate process
 
 For more information, see the [Exporters reference](docs/api-reference/advanced/exporters.md)
 
@@ -200,9 +208,9 @@ we would have to do extra processing to format them into a HAR file externally.
 
 This is useful for more advanced use cases - for example, if you want to save the last 30 days of requests,
 it's probably not a good idea to keep all of them in memory, or even in a single file on disk.
-Instead, you could use a logging library to save each entry to a separate file, and then merge them into a HAR file when needed.
+Instead, you could use a logging library to save each entry in your logging system, and then merge them into a HAR file when needed.
 
-Harlem *does* support this using `record_to_logger` and `LoggingHarExporter` which logs each entry to a provided logger.
+Harlem *does* support this using `record_to_logger` and `LoggingHarExporter` which log each entry to a provided logger.
 
 However, Harlem also intends to be simple, and output a complete HAR file which can be imported into an HAR viewer
 without any extra processing. Thus, Harlem provides exporters that handle the entire HAR file for many common use cases.
@@ -210,6 +218,8 @@ without any extra processing. Thus, Harlem provides exporters that handle the en
 ### Concurrent exporters
 
 Some of Harlem's exporters are concurrent, meaning they export the data in a separate thread or process.
+Harlem takes a great effort to ensure these exporters are safe to use, but generally speaking - 
+concurrency can cause hard-to-debug issues, so here's a rundown of how Harlem handles concurrency:
 
 Apart from the obvious `ExecutorHarExporter`, `BackgroundThreadHarExporter` (`in_background="thread"`)
 and `BackgroundProcessHarExporter` (`in_background="process"`) exporters,
@@ -239,6 +249,9 @@ However, if you absolutely can not afford to lose data, leak any thread, or have
 with a lot of requests and a lot of recordings, it's always recommended to use the `record_to_logger()` or
 `LoggingHarExporter`, or simply turn off concurrent features, if performance is not a concern.
 This moves the exporting to your logging system, which should be more optimized for your use case.
+
+Of course, as with anything else in harlem, if you run into any issues, please open an issue on the GitHub repository,
+and contributions to improve concurrency are always welcome.
 
 # Credits
 - https://github.com/ahmadnassri/har-schema

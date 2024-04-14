@@ -16,7 +16,7 @@ def record_to_file(path: Union[None, str, Path] = None,
                    in_background: Literal[None, "thread", "process"] = None)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\record.py#L39)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\record.py#L39)
 
 A simple context-manager API for recording to HAR files.
 
@@ -48,7 +48,7 @@ def record_to_logger(logger: Optional[logging.Logger] = None,
                      in_background: Literal[None, "thread", "process"] = None)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\record.py#L86)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\record.py#L86)
 
 A simple context-manager API for recording new pages and entries to a logger.
 

@@ -58,20 +58,30 @@ renderer:
     - harlem.recorders.requests_recorder.RequestsHarRecorder
     - harlem.recorders.aiohttp_recorder.AiohttpHarRecorder
     - harlem.recorders.composite_recorder.CompositeHarRecorder
+    - harlem.recorders.composite_recorder.CompositeHarRecorder.__init__
     - harlem.recorders.base.HarRecorder.*
   - title: Exporters
     name: advanced/exporters
     contents:
     - harlem.exporters.model_exporter.ModelHarExporter
+    - harlem.exporters.model_exporter.ModelHarExporter.__init__
     - harlem.exporters.model_exporter.ModelHarExporter.to_model
     - harlem.exporters.logging_exporter.LoggingHarExporter
+    - harlem.exporters.logging_exporter.LoggingHarExporter.__init__
     - harlem.exporters.io_exporter.IoHarExporter
+    - harlem.exporters.io_exporter.IoHarExporter.__init__
     - harlem.exporters.io_exporter.IoHarExporter.update_file
     - harlem.exporters.io_exporter.FileHarExporter
+    - harlem.exporters.io_exporter.FileHarExporter.__init__
     - harlem.exporters.live_file_exporter.LiveFileHarExporter
+    - harlem.exporters.live_file_exporter.LiveFileHarExporter.__init__
     - harlem.exporters.live_file_exporter.LiveFileHarExporter.update_file
     - harlem.exporters.concurrent_exporter.ExecutorHarExporter
+    - harlem.exporters.concurrent_exporter.ExecutorHarExporter.__init__
     - harlem.exporters.concurrent_exporter.BackgroundThreadHarExporter
+    - harlem.exporters.concurrent_exporter.BackgroundThreadHarExporter.__init__
     - harlem.exporters.concurrent_exporter.BackgroundProcessHarExporter
+    - harlem.exporters.concurrent_exporter.BackgroundProcessHarExporter.__init__
     - harlem.exporters.composite_exporter.CompositeHarExporter
+    - harlem.exporters.composite_exporter.CompositeHarExporter.__init__
     - harlem.exporters.base.HarExporter.*

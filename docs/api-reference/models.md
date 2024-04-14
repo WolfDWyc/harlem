@@ -10,7 +10,7 @@
 class Creator(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L9)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L9)
 
 <a id="harlem.models.har.Creator.name"></a>
 
@@ -32,7 +32,7 @@ class Creator(BaseModel)
 class Browser(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L15)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L15)
 
 <a id="harlem.models.har.Browser.name"></a>
 
@@ -54,7 +54,7 @@ class Browser(BaseModel)
 class PageTimings(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L21)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L21)
 
 <a id="harlem.models.har.PageTimings.onContentLoad"></a>
 
@@ -76,7 +76,7 @@ class PageTimings(BaseModel)
 class Cookie(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L27)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L27)
 
 <a id="harlem.models.har.Cookie.name"></a>
 
@@ -118,7 +118,7 @@ class Cookie(BaseModel)
 class Header(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L38)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L38)
 
 <a id="harlem.models.har.Header.name"></a>
 
@@ -140,7 +140,7 @@ class Header(BaseModel)
 class Query(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L44)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L44)
 
 <a id="harlem.models.har.Query.name"></a>
 
@@ -162,7 +162,7 @@ class Query(BaseModel)
 class Params(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L50)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L50)
 
 <a id="harlem.models.har.Params.name"></a>
 
@@ -192,7 +192,7 @@ class Params(BaseModel)
 class PostData(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L58)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L58)
 
 <a id="harlem.models.har.PostData.mimeType"></a>
 
@@ -218,7 +218,7 @@ class PostData(BaseModel)
 class Content(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L65)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L65)
 
 <a id="harlem.models.har.Content.size"></a>
 
@@ -252,7 +252,7 @@ class Content(BaseModel)
 class BeforeRequest(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L74)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L74)
 
 <a id="harlem.models.har.BeforeRequest.expires"></a>
 
@@ -288,7 +288,7 @@ class BeforeRequest(BaseModel)
 class AfterRequest(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L88)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L88)
 
 <a id="harlem.models.har.AfterRequest.expires"></a>
 
@@ -324,7 +324,7 @@ class AfterRequest(BaseModel)
 class Timings(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L102)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L102)
 
 <a id="harlem.models.har.Timings.dns"></a>
 
@@ -367,7 +367,7 @@ class Timings(BaseModel)
 def total() -> float
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L113)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L113)
 
 <a id="harlem.models.har.Page"></a>
 
@@ -377,7 +377,7 @@ def total() -> float
 class Page(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L122)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L122)
 
 <a id="harlem.models.har.Page.startedDateTime"></a>
 
@@ -407,7 +407,7 @@ class Page(BaseModel)
 class Request(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L130)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L130)
 
 <a id="harlem.models.har.Request.method"></a>
 
@@ -457,7 +457,7 @@ class Request(BaseModel)
 class Response(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L143)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L143)
 
 <a id="harlem.models.har.Response.status"></a>
 
@@ -507,7 +507,7 @@ class Response(BaseModel)
 class Cache(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L156)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L156)
 
 <a id="harlem.models.har.Cache.beforeRequest"></a>
 
@@ -529,7 +529,7 @@ class Cache(BaseModel)
 class CallFrame(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L166)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L166)
 
 <a id="harlem.models.har.CallFrame.functionName"></a>
 
@@ -559,7 +559,7 @@ class CallFrame(BaseModel)
 class Stack(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L174)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L174)
 
 <a id="harlem.models.har.Stack.callFrames"></a>
 
@@ -573,7 +573,7 @@ class Stack(BaseModel)
 class Initiator(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L178)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L178)
 
 <a id="harlem.models.har.Initiator.type"></a>
 
@@ -591,7 +591,7 @@ class Initiator(BaseModel)
 class Entry(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L186)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L186)
 
 <a id="harlem.models.har.Entry.pageref"></a>
 
@@ -645,7 +645,7 @@ class Entry(BaseModel)
 class Log(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L200)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L200)
 
 <a id="harlem.models.har.Log.version"></a>
 
@@ -679,7 +679,7 @@ class Log(BaseModel)
 class Har(BaseModel)
 ```
 
-[[view_source]](https://github.com/WolfDWyc/harlem/blob/3288cf1f0787c62d65a4b63ed890dae8f1eaed0b/harlem\models\har.py#L209)
+[[view_source]](https://github.com/WolfDWyc/harlem/blob/9f8f46048005256a8222ca316913bf605877223c/harlem\models\har.py#L209)
 
 <a id="harlem.models.har.Har.log"></a>
 
